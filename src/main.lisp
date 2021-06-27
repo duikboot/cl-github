@@ -7,9 +7,7 @@
 (defparameter *tokens-file* "tokens.lisp")
 (defparameter *username* nil)
 (defparameter *apitoken* nil)
-(defparameter *api-url* "https://api.github.com/users/~A")
-(defparameter *api-url* (format nil "https://api.github.com/users/~A/repos" *username*))
-(defparameter *create-api-url* (format nil "https://api.github.com/user/repos")) 
+(defparameter *api-url* "https://api.github.com/")
 
 
 
@@ -21,10 +19,20 @@
 
 (load-tokens *tokens-file*)
 
+(defun get-repo-details (repo)
+  (let ((*api-url* (concatenate 'string *api-url* "repos/" *username* "/" repo)))
+    (multiple-value-bind (body status headers uri connection)
+        (dexador:get
+          *api-url*
+          :headers (list 
+                    (cons "Authorization" (format nil "token ~A" *apitoken*))))
+      (jsown:parse body))))
+
+
 (defun get-repos ()
   (multiple-value-bind (body status headers uri connection)
       (dexador:get
-        *api-url*
+        (concatenate 'string *api-url* (format nil "users/~A/repos" *username*))
         :headers (list 
                    (cons "Authorization" (format nil "token ~A" *apitoken*))))
     (jsown:parse body)))
@@ -32,7 +40,7 @@
 (defun create-repo (repo)
   (multiple-value-bind (body status headers uri connection)
       (dexador:post
-        *create-api-url*
+        (concatenate 'string *api-url* "user/repos")
         :headers (list 
                    (cons "Authorization" (format nil "token ~A" *apitoken*))
                    (cons "Content-Type" "application-json"))
@@ -43,5 +51,6 @@
     (alexandria:hash-table-alist headers)))
     ; (jsown:parse body)))
   
-(print (get-repos))
-(create-repo "cl-github")
+(print (get-repo-details "cl-github"))
+; (print (get-repos))
+; (create-repo "cl-github")

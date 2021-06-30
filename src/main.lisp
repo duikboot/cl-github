@@ -19,10 +19,10 @@
 
 (load-tokens *tokens-file*)
 
-(defmacro make-get-call (&body body)
+(defmacro make-get-call (url)
   `(multiple-value-bind (body status headers uri connection)
       (dexador:get
-        ,@body
+        ,url
         :headers (list 
                   (cons "Authorization" (format nil "token ~A" *apitoken*))))
     (jsown:parse body)))

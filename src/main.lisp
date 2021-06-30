@@ -19,38 +19,42 @@
 
 (load-tokens *tokens-file*)
 
-(defun get-repo-details (repo)
-  (let ((*api-url* (concatenate 'string *api-url* "repos/" *username* "/" repo)))
-    (multiple-value-bind (body status headers uri connection)
-        (dexador:get
-          *api-url*
-          :headers (list 
-                    (cons "Authorization" (format nil "token ~A" *apitoken*))))
-      (jsown:parse body))))
+(defmacro make-get-call (&body body)
+  `(multiple-value-bind (body status headers uri connection)
+      (dexador:get
+        ,@body
+        :headers (list 
+                  (cons "Authorization" (format nil "token ~A" *apitoken*))))
+    (jsown:parse body)))
 
+(defmacro make-post-call (url &body body)
+  `(multiple-value-bind (body status headers uri connection)
+      (dexador:post
+        ,url
+        :headers (list 
+                  (cons "Authorization" (format nil "token ~A" *apitoken*))
+                  (cons "Content-Type" "application-json"))
+        ,@body)
+      status))
+
+
+(defun get-repo-details (repo)
+  (make-get-call (concatenate 'string *api-url* "repos/" *username* "/" repo)))
 
 (defun get-repos ()
-  (multiple-value-bind (body status headers uri connection)
-      (dexador:get
-        (concatenate 'string *api-url* (format nil "users/~A/repos" *username*))
-        :headers (list 
-                   (cons "Authorization" (format nil "token ~A" *apitoken*))))
-    (jsown:parse body)))
-  
+  (make-get-call (concatenate 'string *api-url* (format nil "users/~A/repos" *username*))))
+
 (defun create-repo (repo)
-  (multiple-value-bind (body status headers uri connection)
-      (dexador:post
+  (make-post-call
         (concatenate 'string *api-url* "user/repos")
-        :headers (list 
-                   (cons "Authorization" (format nil "token ~A" *apitoken*))
-                   (cons "Content-Type" "application-json"))
         :content (cl-json:encode-json-alist-to-string
                    `(("name" . ,repo)
-                     ("auto_init" . "true")))
-        :verbose t)
-    (alexandria:hash-table-alist headers)))
+                     ("auto_init" . "true")))))
+    ; (alexandria:hash-table-alist headers)))
+
     ; (jsown:parse body)))
+
   
-(print (get-repo-details "cl-github"))
-; (print (get-repos))
-; (create-repo "cl-github")
+(print (get-repos))
+; (when (= (create-repo "notes") 201)
+;   (print (get-repo-details "notes")))

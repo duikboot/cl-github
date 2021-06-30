@@ -7,7 +7,7 @@
 (defparameter *tokens-file* "tokens.lisp")
 (defparameter *username* nil)
 (defparameter *apitoken* nil)
-(defparameter *api-url* "https://api.github.com/")
+(defparameter *api-url* "https://api.github.com")
 
 
 
@@ -39,14 +39,16 @@
 
 
 (defun get-repo-details (repo)
-  (make-get-call (concatenate 'string *api-url* "repos/" *username* "/" repo)))
+  (let ((url (format nil "~A/repos/~A/~A" *api-url* *username* repo)))
+    (make-get-call url)))
 
 (defun get-repos ()
-  (make-get-call (concatenate 'string *api-url* (format nil "users/~A/repos" *username*))))
+  (let ((url (format nil "~A/users/~A/repos" *api-url* *username*)))
+    (make-get-call url)))
 
 (defun create-repo (repo)
   (make-post-call
-        (concatenate 'string *api-url* "user/repos")
+        (format nil "~A/~A" *api-url* "user/repos")
         :content (cl-json:encode-json-alist-to-string
                    `(("name" . ,repo)
                      ("auto_init" . "true")))))
@@ -55,6 +57,7 @@
     ; (jsown:parse body)))
 
   
-(print (get-repos))
+; (print (get-repos))
+(print (get-repo-details "cl-duikboot"))
 ; (when (= (create-repo "notes") 201)
 ;   (print (get-repo-details "notes")))

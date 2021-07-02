@@ -57,7 +57,3 @@
     ; (jsown:parse body)))
 
   
-; (print (get-repos))
-(print (get-repo-details "cl-duikboot"))
-; (when (= (create-repo "notes") 201)
-;   (print (get-repo-details "notes")))

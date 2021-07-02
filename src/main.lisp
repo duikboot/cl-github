@@ -17,7 +17,15 @@
       (setf *username* (read in))
       (setf *apitoken* (read in)))))
 
-(load-tokens *tokens-file*)
+
+(defmacro make-call (prot url)
+  (let (()))
+  `(multiple-value-bind (body status headers uri connection)
+      (funcall #'dexador:get
+        ,url
+        :headers (list 
+                  (cons "Authorization" (format nil "token ~A" *apitoken*))))
+    (jsown:parse body)))
 
 (defmacro make-get-call (url)
   `(multiple-value-bind (body status headers uri connection)

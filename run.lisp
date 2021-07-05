@@ -12,4 +12,9 @@
 ; (when (= (create-repo "notes") 201)
 ; (print (jsown:parse (get-repo-details "notes") "ssh_url"))
 
-(print (jsown:parse (get-repo-details "notes") "summary" "ssh_url" "private"))
+; (multiple-value-bind (status json) (get-repo-details "notes")
+;   (print (jsown:parse json "summary" "ssh_url" "private")))
+
+(multiple-value-bind (status json) (get-repo-details "notes")
+  (declare (ignorable status json))
+  (print (jsown:keywords (jsown:parse json))))

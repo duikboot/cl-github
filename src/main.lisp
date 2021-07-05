@@ -25,7 +25,7 @@
         :headers (list 
                   (cons "Authorization" (format nil "token ~A" *apitoken*))
                   (cons "Content-Type" "application-json")))
-    body))
+    (values status body)))
 
 (defmacro make-post-call (url &body body)
   `(multiple-value-bind (body status headers uri connection)
@@ -35,7 +35,7 @@
                   (cons "Authorization" (format nil "token ~A" *apitoken*))
                   (cons "Content-Type" "application-json"))
         ,@body)
-      status))
+      (values status body)))
 
 
 (defun get-repo-details (repo)

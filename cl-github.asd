@@ -6,12 +6,16 @@
   :license ""
   :depends-on ("dexador"
                "alexandria"
+               "unix-opts"
                "jsown"
                "cl-json")
   :components ((:module "src"
                 :components
                 ((:file "main"))))
   :description ""
+  :build-operation "program-op"
+  :build-pathname "cl-github"
+  :entry-point "cl-github::main"
   :in-order-to ((test-op (test-op "cl-github/tests"))))
 
 (defsystem "cl-github/tests"

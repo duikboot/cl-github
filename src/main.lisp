@@ -18,22 +18,14 @@
       (setf *apitoken* (read in)))))
 
 
-(defmacro make-call (prot url)
-  (let (()))
-  `(multiple-value-bind (body status headers uri connection)
-      (funcall #'dexador:get
-        ,url
-        :headers (list 
-                  (cons "Authorization" (format nil "token ~A" *apitoken*))))
-    (jsown:parse body)))
-
 (defmacro make-get-call (url)
   `(multiple-value-bind (body status headers uri connection)
       (dexador:get
         ,url
         :headers (list 
-                  (cons "Authorization" (format nil "token ~A" *apitoken*))))
-    (jsown:parse body)))
+                  (cons "Authorization" (format nil "token ~A" *apitoken*))
+                  (cons "Content-Type" "application-json")))
+    body))
 
 (defmacro make-post-call (url &body body)
   `(multiple-value-bind (body status headers uri connection)
@@ -54,12 +46,13 @@
   (let ((url (format nil "~A/users/~A/repos" *api-url* *username*)))
     (make-get-call url)))
 
-(defun create-repo (repo)
+(defun create-repo (repo &key (private t))
   (make-post-call
         (format nil "~A/~A" *api-url* "user/repos")
         :content (cl-json:encode-json-alist-to-string
                    `(("name" . ,repo)
-                     ("auto_init" . "true")))))
+                     ("auto_init" . "true")
+                     ("private" . ,private)))))
     ; (alexandria:hash-table-alist headers)))
 
     ; (jsown:parse body)))

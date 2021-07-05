@@ -4,8 +4,12 @@
 
 (in-package :cl-github)
 
-; (print (get-repos))
-; (load-tokens *tokens-file*)
+; (load-tokens "tokens.lisp")
+
+(load-tokens *tokens-file*)
 ; (print (get-repo-details "cl-duikboot"))
+; (print (get-repos))
 ; (when (= (create-repo "notes") 201)
-;   (print (get-repo-details "notes")))
+; (print (jsown:parse (get-repo-details "notes") "ssh_url"))
+
+(print (jsown:parse (get-repo-details "notes") "summary" "ssh_url" "private"))

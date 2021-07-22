@@ -6,7 +6,7 @@
   :license ""
   :depends-on ("dexador"
                "alexandria"
-               "unix-opts"
+               "defmain"
                "jsown"
                "cl-json")
   :components ((:module "src"

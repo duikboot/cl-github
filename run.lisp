@@ -15,6 +15,7 @@
 ; (multiple-value-bind (status json) (get-repo-details "notes")
 ;   (print (jsown:parse json "summary" "ssh_url" "private")))
 
-(multiple-value-bind (status json) (get-repo-details "notes")
-  (declare (ignorable status json))
-  (print (jsown:keywords (jsown:parse json))))
+; (multiple-value-bind (status json) (get-repo-details "notes")
+;   (declare (ignorable status json))
+;   (print (jsown:keywords (jsown:parse json))))
+(main)

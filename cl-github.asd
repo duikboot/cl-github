@@ -8,6 +8,7 @@
                "alexandria"
                "defmain"
                "jsown"
+               "access"
                "cl-json")
   :components ((:module "src"
                 :components

@@ -14,4 +14,3 @@ build:
 		--eval "(sb-ext:save-lisp-and-die #p\"${APP}\" :toplevel #'${APP}::main \
 		:executable t :purify t :save-runtime-options t :compression t)" \
 		--eval '(quit)'
-

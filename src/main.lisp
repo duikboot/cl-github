@@ -55,7 +55,10 @@
 (defun get-repo-details (repo)
   (let ((url (format nil "~A/repos/~A/~A" *api-url* *username* repo)))
     (multiple-value-bind (status json) (call 'get url nil)
-      (jsown:parse json "owner" "full_name" "ssh_url" "private"))))
+      (let ((owner (jsown:parse json "owner")))
+        (jsown:parse json "full_name" "ssh_url" "private")))))
+        ; owner))))
+      ; (cl-json:decode-json-from-string json))))
 
 (defun get-repos ()
   (let ((url (format nil "~A/users/~A/repos" *api-url* *username*)))
@@ -99,9 +102,7 @@
 ;   (format t "Repository ~A~%" repository))
 
 
-(defmain:defcommand (repo info)
-  ; ((repository "name of the repo"))
-  (&rest repository)
+(defmain:defcommand (repo info)(&rest repository)
   "Get info on repository."
   (format t "~A~%" (get-repo-details (first repository))))
 
